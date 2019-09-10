@@ -120,7 +120,6 @@ End If
 Next d
 
 ' Find the greatest total volume
-' needs to be changed when you can get column L figured out :-/
 For e = 2 To yclr
 If Cells(e, 12).Value = WorksheetFunction.Max(sheets.Range("L2:L" & yclr)) Then
 Cells(4, 16).Value = Cells(e, 9).Value
