@@ -1,0 +1,135 @@
+Sub finalhwstocks1()
+
+' Loop sheets
+Dim Sheet As Worksheet
+For Each Sheet In ActiveWorkbook.Worksheets
+Sheet.Activate
+    
+Dim sheets As Worksheet
+Set sheets = ActiveSheet
+
+'Find last row
+Dim lastrow As Long
+lastrow = Cells(Rows.Count, 1).End(xlUp).Row
+
+' Add Heading for summary
+Cells(1, "I").Value = "Ticker"
+Cells(1, "J").Value = "Yearly Change"
+Cells(1, "K").Value = "Percent Change"
+Cells(1, "L").Value = "Total Stock Volume"
+
+Cells(2, "O").Value = "Greatest Percent Increase"
+Cells(3, "O").Value = "Greatest Percent Decrease"
+Cells(4, "O").Value = "Greatest Total Volume"
+
+Cells(1, "P").Value = "Ticker"
+Cells(1, "Q").Value = "Value"
+
+'Create Variable
+Dim openprice As Double
+Dim Close_Price As Double
+
+Dim Yearly_Change As Double
+Dim Ticker_Name As String
+Dim Percent_Change As Double
+
+Dim Volume As Double
+Volume = 0
+
+Dim Row As Double
+Row = 2
+
+Dim Column As Integer
+Column = 1
+ 
+Dim col As Integer
+col = 1
+
+'open prince
+openprice = Cells(2, Column + 2).Value
+        
+'Ticker names loop
+For a = 2 To lastrow
+
+If Cells(a + 1, Column).Value <> Cells(a, Column).Value Then
+
+Ticker_Name = Cells(a, Column).Value
+Cells(Row, Column + 8).Value = Ticker_Name
+
+Close_Price = Cells(a, Column + 5).Value
+
+Yearly_Change = Close_Price - openprice
+Cells(Row, Column + 9).Value = Yearly_Change
+
+'percent change
+If (openprice = 0 And Close_Price = 0) Then
+    Percent_Change = 0
+ElseIf (openprice = 0 And Close_Price <> 0) Then
+    Percent_Change = 1
+Else: Percent_Change = Yearly_Change / openprice
+     Cells(Row, Column + 10).Value = Percent_Change
+    Cells(Row, Column + 10).NumberFormat = "0.00%"
+End If
+' reset the Open Price
+openprice = Cells(a + 1, Column + 2)
+
+
+' total vol
+Volume = Volume + Cells(a, Column + 6).Value
+Cells(Row, Column + 11).Value = Volume
+Row = Row + 1
+Volume = 0
+Else
+Volume = Volume + Cells(a, Column + 6).Value
+End If
+
+Next a
+        
+
+'Last row for yearly change
+yclr = Cells(Rows.Count, col + 8).End(xlUp).Row
+
+'color the cells
+For C = 2 To yclr
+If (Cells(C, col + 9).Value > 0 Or Cells(C, col + 9).Value = 0) Then
+Cells(C, col + 9).Interior.ColorIndex = 10
+ 
+ElseIf Cells(C, col + 9).Value < 0 Then
+Cells(C, col + 9).Interior.ColorIndex = 3
+
+End If
+Next C
+        
+' find the greatest percent increase
+For b = 2 To yclr
+If Cells(b, 11).Value = WorksheetFunction.Max(sheets.Range("K2:K" & yclr)) Then
+Cells(2, 16).Value = Cells(b, 9).Value
+Cells(2, 17).Value = Cells(b, 11).Value
+Cells(2, 17).NumberFormat = "0.00%"
+End If
+Next b
+
+' Find the greatest precent decrease
+
+For d = 2 To yclr
+If Cells(d, 11).Value = WorksheetFunction.Min(sheets.Range("K2:K" & yclr)) Then
+Cells(3, 16).Value = Cells(d, 9).Value
+Cells(3, 17).Value = Cells(d, 11).Value
+Cells(3, 17).NumberFormat = "0.00%"
+End If
+Next d
+
+' Find the greatest total volume
+' needs to be changed when you can get column L figured out :-/
+For e = 2 To yclr
+If Cells(e, 12).Value = WorksheetFunction.Max(sheets.Range("L2:L" & yclr)) Then
+Cells(4, 16).Value = Cells(e, 9).Value
+Cells(4, 17).Value = Cells(e, 12).Value
+
+End If
+Next e
+        
+        
+Next Sheet
+        
+End Sub
