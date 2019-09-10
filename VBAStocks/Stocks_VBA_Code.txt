@@ -70,6 +70,7 @@ Else: Percent_Change = Yearly_Change / openprice
      Cells(Row, Column + 10).Value = Percent_Change
     Cells(Row, Column + 10).NumberFormat = "0.00%"
 End If
+
 ' reset the Open Price
 openprice = Cells(a + 1, Column + 2)
 
@@ -79,8 +80,7 @@ Volume = Volume + Cells(a, Column + 6).Value
 Cells(Row, Column + 11).Value = Volume
 Row = Row + 1
 Volume = 0
-Else
-Volume = Volume + Cells(a, Column + 6).Value
+Else: Volume = Volume + Cells(a, Column + 6).Value
 End If
 
 Next a
